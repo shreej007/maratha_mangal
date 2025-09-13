@@ -1,0 +1,52 @@
+com.mm.app-lifecycle-livedata-2.7.0-0 /Users/shree/.gradle/caches/8.9/transforms/025d008a620b820192a6a28b544d65c4/transformed/lifecycle-livedata-2.7.0/res
+com.mm.app-jetified-lifecycle-viewmodel-savedstate-2.7.0-1 /Users/shree/.gradle/caches/8.9/transforms/0978c0cb74ed3f31a0a3efae6a110fdf/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/res
+com.mm.app-jetified-activity-1.8.1-2 /Users/shree/.gradle/caches/8.9/transforms/0ab56b89e70b52e2e1f9db27826066e5/transformed/jetified-activity-1.8.1/res
+com.mm.app-jetified-core-1.0.0-3 /Users/shree/.gradle/caches/8.9/transforms/19be9aa0afb9e50cfd22817419b1dc44/transformed/jetified-core-1.0.0/res
+com.mm.app-jetified-activity-ktx-1.8.1-4 /Users/shree/.gradle/caches/8.9/transforms/2712725db38f3fb8a3ad4feb79774b64/transformed/jetified-activity-ktx-1.8.1/res
+com.mm.app-lifecycle-runtime-2.7.0-5 /Users/shree/.gradle/caches/8.9/transforms/2e858e6d5aa03a7cc10eb9411d28a6b0/transformed/lifecycle-runtime-2.7.0/res
+com.mm.app-jetified-lifecycle-runtime-ktx-2.7.0-6 /Users/shree/.gradle/caches/8.9/transforms/3bcf3874ccec9861ea3d3aa5d255a51f/transformed/jetified-lifecycle-runtime-ktx-2.7.0/res
+com.mm.app-browser-1.4.0-7 /Users/shree/.gradle/caches/8.9/transforms/44f4d903c1107fabc13957bb86fb845c/transformed/browser-1.4.0/res
+com.mm.app-core-runtime-2.2.0-8 /Users/shree/.gradle/caches/8.9/transforms/49ac285b40fe5b131d5bd337d6c1af1a/transformed/core-runtime-2.2.0/res
+com.mm.app-jetified-window-1.2.0-9 /Users/shree/.gradle/caches/8.9/transforms/4f87338bdd00c8aa0f0d03f1c8b1588f/transformed/jetified-window-1.2.0/res
+com.mm.app-jetified-datastore-core-release-10 /Users/shree/.gradle/caches/8.9/transforms/505e703347c6d7cf31fcd70156d82a22/transformed/jetified-datastore-core-release/res
+com.mm.app-jetified-tracing-1.2.0-11 /Users/shree/.gradle/caches/8.9/transforms/55b21fcd9d0a248e15853983c00d7a45/transformed/jetified-tracing-1.2.0/res
+com.mm.app-appcompat-1.1.0-12 /Users/shree/.gradle/caches/8.9/transforms/5724f764ce4e8a2fc22b67e73ba33689/transformed/appcompat-1.1.0/res
+com.mm.app-jetified-datastore-preferences-release-13 /Users/shree/.gradle/caches/8.9/transforms/5b66d0136be64c8d6a5ea5044a463bd4/transformed/jetified-datastore-preferences-release/res
+com.mm.app-transition-1.4.1-14 /Users/shree/.gradle/caches/8.9/transforms/5ccea8c72fd2c95e99c0568ebabbcbf8/transformed/transition-1.4.1/res
+com.mm.app-jetified-savedstate-ktx-1.2.1-15 /Users/shree/.gradle/caches/8.9/transforms/72e8cdb83075e2557457456452589ea1/transformed/jetified-savedstate-ktx-1.2.1/res
+com.mm.app-preference-1.2.1-16 /Users/shree/.gradle/caches/8.9/transforms/7e4b60cb2008aeb47098b53241ace5a4/transformed/preference-1.2.1/res
+com.mm.app-jetified-appcompat-resources-1.1.0-17 /Users/shree/.gradle/caches/8.9/transforms/7e575bf2337c65c1cd328cd9c2516cab/transformed/jetified-appcompat-resources-1.1.0/res
+com.mm.app-jetified-datastore-release-18 /Users/shree/.gradle/caches/8.9/transforms/7fc99b82fda461e5c06ff96cce25887e/transformed/jetified-datastore-release/res
+com.mm.app-jetified-startup-runtime-1.1.1-19 /Users/shree/.gradle/caches/8.9/transforms/85a97271b7a96609c72bec00e1aeb421/transformed/jetified-startup-runtime-1.1.1/res
+com.mm.app-jetified-lifecycle-livedata-core-ktx-2.7.0-20 /Users/shree/.gradle/caches/8.9/transforms/8769a7922f51bf40b49a741a462142e0/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/res
+com.mm.app-slidingpanelayout-1.2.0-21 /Users/shree/.gradle/caches/8.9/transforms/95e9c5b274b7523b3c7704b12b4bba59/transformed/slidingpanelayout-1.2.0/res
+com.mm.app-lifecycle-livedata-core-2.7.0-22 /Users/shree/.gradle/caches/8.9/transforms/98004926afe2351bb4d4f0d2ccd41744/transformed/lifecycle-livedata-core-2.7.0/res
+com.mm.app-jetified-lifecycle-viewmodel-ktx-2.7.0-23 /Users/shree/.gradle/caches/8.9/transforms/9a379f0b164f165fddcb86a007af1079/transformed/jetified-lifecycle-viewmodel-ktx-2.7.0/res
+com.mm.app-coordinatorlayout-1.0.0-24 /Users/shree/.gradle/caches/8.9/transforms/a096ab9e233c004552b80cf7e9c5f9c2/transformed/coordinatorlayout-1.0.0/res
+com.mm.app-fragment-1.7.1-25 /Users/shree/.gradle/caches/8.9/transforms/a2b2a46f2034e9b96054d3cfb5cd4d44/transformed/fragment-1.7.1/res
+com.mm.app-jetified-savedstate-1.2.1-26 /Users/shree/.gradle/caches/8.9/transforms/a5c08f8c277dd38ae06a097ffb8a0efd/transformed/jetified-savedstate-1.2.1/res
+com.mm.app-jetified-play-services-base-18.0.1-27 /Users/shree/.gradle/caches/8.9/transforms/aff8c063488a50748cccbbf92c6f58ca/transformed/jetified-play-services-base-18.0.1/res
+com.mm.app-jetified-window-java-1.2.0-28 /Users/shree/.gradle/caches/8.9/transforms/b0b5314ce5eafd81876887a1e5b5ab9c/transformed/jetified-window-java-1.2.0/res
+com.mm.app-jetified-core-ktx-1.13.1-29 /Users/shree/.gradle/caches/8.9/transforms/b4cb5d68bbdbd7f4687117a9e9ab472a/transformed/jetified-core-ktx-1.13.1/res
+com.mm.app-jetified-annotation-experimental-1.4.0-30 /Users/shree/.gradle/caches/8.9/transforms/b6beea6170ddf1338419ee524deca071/transformed/jetified-annotation-experimental-1.4.0/res
+com.mm.app-jetified-profileinstaller-1.3.1-31 /Users/shree/.gradle/caches/8.9/transforms/b899c442956616e031026ba482d6e202/transformed/jetified-profileinstaller-1.3.1/res
+com.mm.app-jetified-play-services-basement-18.3.0-32 /Users/shree/.gradle/caches/8.9/transforms/bf0aecb7e48a1ad357124ccf92b77b10/transformed/jetified-play-services-basement-18.3.0/res
+com.mm.app-jetified-firebase-common-20.4.3-33 /Users/shree/.gradle/caches/8.9/transforms/d894e9d74c9c6e13ea557c15287d55aa/transformed/jetified-firebase-common-20.4.3/res
+com.mm.app-recyclerview-1.0.0-34 /Users/shree/.gradle/caches/8.9/transforms/db5149a6f636a5b5fc578a272b6eb1eb/transformed/recyclerview-1.0.0/res
+com.mm.app-jetified-fragment-ktx-1.7.1-35 /Users/shree/.gradle/caches/8.9/transforms/e4fe51352b8bb7ae872acc1118f9abea/transformed/jetified-fragment-ktx-1.7.1/res
+com.mm.app-jetified-lifecycle-process-2.7.0-36 /Users/shree/.gradle/caches/8.9/transforms/ebcb14812a3075d307a6815c44b9d1a5/transformed/jetified-lifecycle-process-2.7.0/res
+com.mm.app-core-1.13.1-37 /Users/shree/.gradle/caches/8.9/transforms/f286d7846aac1deb03e84d6cf021b9f4/transformed/core-1.13.1/res
+com.mm.app-lifecycle-viewmodel-2.7.0-38 /Users/shree/.gradle/caches/8.9/transforms/f95395683b5f10cabca27ed5ae0c397d/transformed/lifecycle-viewmodel-2.7.0/res
+com.mm.app-debug-39 /Users/shree/Desktop/SOW 2/microblink/app/android/app/src/debug/res
+com.mm.app-main-40 /Users/shree/Desktop/SOW 2/microblink/app/android/app/src/main/res
+com.mm.app-pngs-41 /Users/shree/Desktop/SOW 2/microblink/app/build/app/generated/res/pngs/debug
+com.mm.app-resValues-42 /Users/shree/Desktop/SOW 2/microblink/app/build/app/generated/res/resValues/debug
+com.mm.app-packageDebugResources-43 /Users/shree/Desktop/SOW 2/microblink/app/build/app/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.mm.app-packageDebugResources-44 /Users/shree/Desktop/SOW 2/microblink/app/build/app/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.mm.app-debug-45 /Users/shree/Desktop/SOW 2/microblink/app/build/app/intermediates/merged_res/debug/mergeDebugResources
+com.mm.app-debug-46 /Users/shree/Desktop/SOW 2/microblink/app/build/cloud_firestore/intermediates/packaged_res/debug/packageDebugResources
+com.mm.app-debug-47 /Users/shree/Desktop/SOW 2/microblink/app/build/connectivity_plus/intermediates/packaged_res/debug/packageDebugResources
+com.mm.app-debug-48 /Users/shree/Desktop/SOW 2/microblink/app/build/firebase_auth/intermediates/packaged_res/debug/packageDebugResources
+com.mm.app-debug-49 /Users/shree/Desktop/SOW 2/microblink/app/build/firebase_core/intermediates/packaged_res/debug/packageDebugResources
+com.mm.app-debug-50 /Users/shree/Desktop/SOW 2/microblink/app/build/flutter_keyboard_visibility/intermediates/packaged_res/debug/packageDebugResources
+com.mm.app-debug-51 /Users/shree/Desktop/SOW 2/microblink/app/build/shared_preferences_android/intermediates/packaged_res/debug/packageDebugResources
