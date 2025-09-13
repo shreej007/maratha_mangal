@@ -1,5 +1,6 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:app/module/registration/models/registration_model.dart';
@@ -53,24 +54,42 @@ class RegistrationController extends GetxController {
     update();
   }
 
-  registerUser(){
-    Get.to(const CompleteProfileScreen(),binding: CompleteProfileBinding());
+  registerUser() async {
+    if (!validateForm()) return;
 
-    // if(validateForm()){
-    //   var registrationModel = RegistrationModel(firstName: controllerFirstName.text,
-    //       lastName: controllerLastName.text, middleName: controllerMiddleName.text, gender: dropdownValueGender,
-    //       birthdate: birthdateText.toString(), subCaste: dropdownValueSubCaste, email: controllerEmail.text,
-    //       mobile: controllerMobileNo.text, password: controllerPassword.text);
-    //   try {
-    //     FirebaseFirestore.instance
-    //         .collection('Registered').doc(registrationModel.mobile).set(registrationModel.registrationToJson());
-    //     setFieldToBlank();
-    //     Get.to(const CompleteProfileScreen(),binding: CompleteProfileBinding());
-    //   }catch(e){
-    //     debugPrint("Registration Exception $e");
-    //   }
-    // }
-   }
+    final url = Uri.parse('https://silver-invention-7vwj4pww7vqv3r64r-3000.app.github.dev/api/auth/register'); // Replace with your backend URL
+    final body = {
+      "first_name": controllerFirstName.text,
+      "middle_name": controllerMiddleName.text,
+      "last_name": controllerLastName.text,
+      "gender": dropdownValueGender,
+      "birth_date": birthdateText,
+      "sub_caste": dropdownValueSubCaste,
+      "email": controllerEmail.text,
+      "mobile_no": controllerMobileNo.text,
+      "password": controllerPassword.text,
+      "confirm_password": controllerConfirmPassword.text
+    };
+
+    try {
+      final response = await http.post(url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode(body),
+      );
+      if (response.statusCode == 200) {
+        // Registration successful
+        setFieldToBlank();
+        Get.snackbar("Success", "Registration completed successfully");
+        Get.to(const DashboardScreen(),binding: DashboardBinding());
+      } else {
+        // Registration failed
+        final resp = json.decode(response.body);
+        Get.snackbar("Error", resp["message"] ?? "Registration failed");
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Server error: $e");
+    }
+  }
 
   validateForm() {
     if (controllerFirstName.text == "") {

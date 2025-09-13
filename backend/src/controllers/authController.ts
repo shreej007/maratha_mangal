@@ -1,360 +1,125 @@
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import HttpException from '@/exceptions/HttpException';
-import { loginSchema, verifyOtpSchema, verifyEmailSchema, emailSchema, adminLoginSchema} from '@/schema/common';
-import { createJwtToken, generateOtp } from '@/utils/utils';
-import User, { userSchema } from '@/models/user';
-import Admin from '@/models/admin';
-import Otp from '@/models/otp';
 
-// This function is used to login
-export const login = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const validatedData = loginSchema.safeParse(req.body);
-    if (!validatedData.success) {
-      throw new HttpException(500, 'Validation failed', validatedData.error);
+import { loginSchema, emailSchema, resetPasswordSchema } from '@/schema/common';
+import { userSchema, UserType } from '@/models/user';
+import User from '@/models/user';
+import bcrypt from 'bcryptjs';
+import { createJwtToken } from '@/utils/utils';
+
+export const register = async (req: Request, res: Response, next: NextFunction) => {
+  console.log("Register endpoint hit");
+    try {
+        const parsedData: UserType = userSchema.parse(req.body);
+
+        if (parsedData.basic_info.password !== parsedData.basic_info.confirm_password) {
+            return next(new HttpException(400, "Passwords do not match"));
+        }
+
+        const existingUser = await User.findOne({ email: parsedData.basic_info.email });
+        if (existingUser) {
+            return next(new HttpException(409, "Email already in use"));
+        }
+
+        const hashedPassword = await bcrypt.hash(parsedData.basic_info.password, 10);
+        const newUser = new User({
+            ...parsedData,
+            password: hashedPassword,
+            confirm_password: hashedPassword // Store hashed confirm_password as well
+        });
+
+        await newUser.save();
+
+        res.status(201).json({ message: "User registered successfully" });
+    } catch (error) {
+        if (error instanceof z.ZodError) {
+            return next(new HttpException(400, error.errors.map(e => e.message).join(", ")));
+        }
+        next(error);
     }
-    const { mobile } = validatedData.data;
-    const otpExists = await Otp.findOne({ mobile });
-
-    const expiryTime = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes from now
-    const otp = generateOtp();
-
-    if (otpExists) {
-        otpExists.otp = otp.toString();
-        otpExists.expirationTime = expiryTime;
-        await otpExists.save();
-      // Trigger sms service to send OTP
-      res.status(200).json({
-        success: true,
-        message: 'OTP sent successfully',
-        otp
-      });
-    }
-
-    const newOtp = new Otp({ mobile, otp, expirationTime: expiryTime });
-    await newOtp.save();
-    // Trigger sms service to send OTP
-    res.status(200).json({
-      success: true,
-      message: 'OTP sent successfully',
-      otp
-    });
-  } catch (error) {
-
-    if (error instanceof z.ZodError) {
-      return next(new HttpException(500, 'Validation failed', error));
-    }
-
-    console.error('Error sending OTP:', error);
-    next(new HttpException(500, 'Internal Server Error'));
-  }
 };
 
-// This function will generate a new OTP and send it to the user's mobile number
-export const verifyOtp = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const validatedData = verifyOtpSchema.safeParse(req.body);
-    
-    if (!validatedData.success) {
-      throw new HttpException(500, 'Validation failed', validatedData.error);
-    }
+export const login = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const parsedData = loginSchema.parse(req.body);
 
-    const { mobile, otp } = validatedData.data;
-    const otpRecord = await Otp.findOne({ mobile });
-    const currentTime = new Date();
-    if(!otpRecord){
-      res.status(500).json({
-        success: false,
-        message: 'OTP not found',
-      }); 
-    }
-    else {
-      if (otpRecord.expirationTime < currentTime) {
-        res.status(500).json({
-          success: false,
-          message: 'OTP expired',
-        });
-      }
-      else {
-        if (otpRecord.otp !== otp) {
-          res.status(500).json({
-            success: false,
-            message: 'Invalid OTP',
-          });
+        console.log("Login attempt for email:", parsedData.email);
+
+  
+        const user = await User.findOne({ "basic_info.email": parsedData.email });
+
+        console.log("User found:", user);
+        if (!user) {
+            return next(new HttpException(401, "Invalid email or password"));
         }
-        else {
-          await Otp.deleteOne({ mobile });
-          const user = await User.findOne({ mobile });
-          if (!user) {
+
+        const isPasswordValid = await User.findOne({ "basic_info.password": parsedData.password, "basic_info.email": user.basic_info.email });
+
+        console.log("Is password valid:", isPasswordValid)
+        if (!isPasswordValid) {
+            return next(new HttpException(401, "Invalid email or password"));
+        }
+
+        const token = createJwtToken({ id: user.id, name: user.basic_info.first_name, email: user.basic_info.email, mobile: user.basic_info.mobile_no });
             res.status(200).json({
               success: true,
-              message: 'OTP verified successfully',
-              data: []
-            });
-          }
-          else  {
-            const token = createJwtToken({ id: user.id, name: user.name, email: user.email, mobile: user.mobile });
-            res.status(200).json({
-              success: true,
-              message: 'OTP verified successfully',
+              message: 'Login successful',
               data: {
                 user,
                 token
               }
             });
-          }
-         
-        }
-      }
-    }
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return next(new HttpException(500, 'Validation failed', error));
-    }
-    console.error('Error verifying OTP:', error);
-    next(new HttpException(500, 'Internal Server Error'));
-  }
-};
 
-// This function will create new user
-export const signUp = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      // Validate request body against schema
-      const validatedData = userSchema.safeParse(req.body);
-  
-      if (!validatedData.success) {
-        // If validation fails, throw an error with details
-        throw new HttpException(
-          500,
-          'Validation failed',
-          validatedData.error
-        );
-      }
-  
-      const existingUser = await User.findOne({ email: validatedData.data.email, mobile: validatedData.data.mobile });
-  
-      if (existingUser) {
-        return next(new HttpException(409, 'User already exists with this email or mobile number', ));
-      }
-  
-      // Create new user with validated data
-      const newUser = new User(validatedData.data);
-      await newUser.save();
-      const token = createJwtToken({ id: newUser.id, name: newUser.name, email: newUser.email, mobile: newUser.mobile });
-  
-      res.status(201).json({
-        success: true,
-        message: 'User created successfully',
-        data: {
-          user: newUser,
-          token
-        }
-      });
+            console.log("Login successful, token generated", token);
+
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        // Handle validation errors
-        return next(new HttpException(500, 'Validation failed', error));
-      }
-      console.error('Error creating user:', error);
-      next(new HttpException(500, 'Internal Server Error'));
-    }
-};
-
-// This Function is used to resend otp to the user again
-export const resendOtp = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const validatedData = loginSchema.safeParse(req.body);
-    if (!validatedData.success) {
-      throw new HttpException(500, 'Validation failed', validatedData.error);
-    }
-    const { mobile } = validatedData.data;
-    const otpExists = await Otp.findOne({ mobile });
-
-    const expiryTime = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes from now
-    const otp = generateOtp();
-
-    if (otpExists) {
-        otpExists.otp = otp.toString();
-        otpExists.expirationTime = expiryTime;
-        await otpExists.save();
-      // Trigger sms service to send OTP
-      res.status(200).json({
-        success: true,
-        message: 'OTP sent successfully',
-        otp
-      });
-    }
-
-    const newOtp = new Otp({ mobile, otp, expirationTime: expiryTime });
-    await newOtp.save();
-    // Trigger sms service to send OTP
-    res.status(200).json({
-      success: true,
-      message: 'OTP sent successfully',
-      otp
-    });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return next(new HttpException(500, 'Validation failed', error));
-    }
-    console.error('Error sending OTP:', error);
-    next(new HttpException(500, 'Internal Server Error'));
-  }
-};
-
-// This Function is used to send email otp
-export const sendEmailOtp = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const validatedData = emailSchema.safeParse(req.body);
-
-    if (!validatedData.success) {
-      throw new HttpException(500, 'Validation failed', validatedData.error);
-    }
-
-    const { email } = validatedData.data;
-    const otp = generateOtp();
-    const expiryTime = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes from now
-
-    // Update existing OTP or create new one
-    await Otp.findOneAndUpdate(
-      { email },
-      { otp: otp.toString(), expirationTime: expiryTime },
-      { upsert: true, new: true }
-    );
-
-    // Here you would integrate with your email service to send the OTP
-    // For example: await sendEmail(email, otp);
-
-    res.status(200).json({
-      success: true,
-      message: 'OTP sent successfully to email',
-      otp // Remove this in production
-    });
-
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return next(new HttpException(500, 'Validation failed', error));
-    }
-    console.error('Error sending email OTP:', error);
-    next(new HttpException(500, 'Internal Server Error'));
-  }
-};
-
-// This function is used to verify email with otp
-export const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    // Validate request body using the existing schema from common.ts
-    const validatedData = verifyEmailSchema.safeParse(req.body);
-
-    if (!validatedData.success) {
-      throw new HttpException(500, 'Validation failed', validatedData.error);
-    }
-
-    const { email, otp } = validatedData.data;
-    
-    // Find the OTP record for this email
-    const otpRecord = await Otp.findOne({ email });
-    const currentTime = new Date();
-
-    if (!otpRecord) {
-      res.status(500).json({
-        success: false,
-        message: 'OTP not found',
-      });
-    }
-    else {
-      if (otpRecord.expirationTime < currentTime) {
-        res.status(500).json({
-          success: false,
-          message: 'OTP expired',
-        });
-      }
-      if (otpRecord.otp !== otp) {
-        res.status(500).json({
-          success: false,
-          message: 'Invalid OTP',
-        });
-      }
-      // If OTP is valid, delete it
-      await Otp.deleteOne({ email });
-
-      // Update user's email verification status if needed
-      await User.findOneAndUpdate(
-        { email },
-        { isEmailVerified: true },
-        { new: true }
-      );
-  
-      res.status(200).json({
-        success: true,
-        message: 'Email verified successfully'
-      });
-    }
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return next(new HttpException(500, 'Validation failed', error));
-    }
-    console.error('Error verifying email:', error);
-    next(new HttpException(500, 'Internal Server Error'));
-  }
-};
-
-// This function is used for admin login
-export const adminLogin = async (req: Request, res: Response, next: NextFunction) => {
-  console.log('Admin login request received:', req.body);
-  try {
-    // Validate request body
-    const validatedData = adminLoginSchema.safeParse(req.body);
-
-    if (!validatedData.success) {
-        next(new HttpException(500, 'Validation failed', validatedData.error));
-    }
-    else {
-      const { mobile, password } = validatedData.data;
-      // Find admin user
-      const admin = await Admin.findOne({ 
-          mobile
-      });
-      console.log('Admin found:', admin);
-
-      if (!admin) {
-          next(new HttpException(401, 'Invalid credentials'));
-      }
-
-      // Verify password (assuming you have a password verification method)
-      // This depends on how you're storing passwords (hopefully hashed)
-      const isValidPassword = admin?.password == password;
-      if (!isValidPassword) {
-          next(new HttpException(401, 'Invalid credentials'));
-      }
-      else {
-        const adminObject = {
-          id: admin.id, 
-          name: admin.name, 
-          email: admin.email, 
-          mobile: admin.mobile,
+        if (error instanceof z.ZodError) {
+            return next(new HttpException(400, error.errors.map(e => e.message).join(", ")));
         }
-        // Generate JWT token
-        const token = createJwtToken(adminObject);
-
-        res.status(200).json({
-          success: true,
-          message: 'Admin logged in successfully',
-          data: {
-              user: adminObject,
-              token
-          }
-        });
-      }
-    } 
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return next(new HttpException(500, 'Validation failed', error));
+        next(error);
     }
-    console.error('Admin login error:', error);
-    next(error instanceof HttpException ? error : new HttpException(500, 'Internal Server Error'));
-  }
 };
 
+export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const parsedData = emailSchema.parse(req.body);
 
+        const user = await User.findOne({ email: parsedData.email }); // Find user by email
+        if (!user) {
+            return next(new HttpException(404, "User not found"));
+        }
+
+        // Here you would typically send a password reset email with a token
+        // For simplicity, we'll just return a success message
+
+        res.status(200).json({ message: "Password reset link sent to email" });
+    } catch (error) {
+        if (error instanceof z.ZodError) {
+            return next(new HttpException(400, error.errors.map(e => e.message).join(", ")));
+        }
+        next(error);
+    }
+};  
+export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const parsedData = resetPasswordSchema.parse(req.body);
+
+        const user = await User.findOne({ email: parsedData.email });
+        if (!user) {
+            return next(new HttpException(404, "User not found"));
+        }
+
+        const hashedPassword = await bcrypt.hash(parsedData.newPassword, 10);
+        user.basic_info.password = hashedPassword;
+        // user.basic_info.confirm_password = hashedPassword; // Update confirm_password as well
+        await user.save();
+
+        res.status(200).json({ message: "Password reset successful" });
+    } catch (error) {
+        if (error instanceof z.ZodError) {
+            return next(new HttpException(400, error.errors.map(e => e.message).join(", ")));
+        }
+        next(error);
+    }
+};
