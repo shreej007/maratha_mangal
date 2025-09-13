@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+      "target": "ES6",
+      "module": "commonjs",
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "types": ["node"],
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "baseUrl": ".",
+      "paths": {
+        "@/*": ["src/*"],
+      },
+      "resolveJsonModule": true
+    },
+    "include": ["Backend/**/*.ts","src/**/*.ts"],
+    "exclude": ["node_modules"]
+  }
